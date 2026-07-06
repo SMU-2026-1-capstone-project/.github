@@ -100,6 +100,7 @@ sequenceDiagram
     participant AI as 🤖 FastAPI AI
     participant BE as ⚙️ Spring Boot
     participant DB as 🗄️ MySQL
+    participant T as ⏰ TimeoutScheduler
 
     FE->>BE: POST /exercises/sessions
     BE->>DB: Session(status=IN_PROGRESS) 생성
@@ -116,14 +117,33 @@ sequenceDiagram
         end
     end
 
+    rect rgba(150,150,150,0.15)
+    Note over AI,DB: 설계됨 · 미연동 (ai-server에 세트 경계 감지·전송 로직 없음)
+    opt 세트 경계 / 세션 종료 시점
+        AI->>BE: gRPC ReportFeedbackBatch(set_no, is_final, events)
+        BE->>DB: feedback_log 저장 (uniqueKey + INSERT IGNORE, 멱등)
+    end
+    end
+
     FE->>BE: PATCH /sessions/{id}/end
+    BE->>DB: endTime 기록 (commit)
+    BE-->>FE: 200 OK
     BE->>AI: (afterCommit) gRPC StopAnalysis
     AI->>AI: SessionState 제거 + 누적 통계 계산
-    AI->>BE: gRPC CompleteAnalysis (실패 시 최대 3회 재시도)
-    BE->>DB: Session(status=COMPLETED, avg_sync_rate 등) 갱신 (@Version 낙관적 락)
+
+    par 오래 걸리는 세션은 동시에
+        T->>DB: status=FAILED 시도 (낙관적 락 체크)
+    and
+        AI->>BE: gRPC CompleteAnalysis (실패 시 최대 3회 재시도)
+        BE->>DB: @Version 낙관적 락으로 갱신 시도
+    end
+    alt 스케줄러와 충돌
+        BE->>BE: 최대 3회 재시도, 콜백 결과 우선
+    end
+    BE->>DB: status=COMPLETED (first-write-wins, 멱등)
 ```
 
-세션 종료 콜백이 지연되면 `SessionTimeoutScheduler`가 1분마다 만료 세션을 `FAILED` 처리하지만, AI 콜백과 동시에 충돌하면 낙관적 락 재시도 후 AI 결과를 우선합니다.
+세션 종료 콜백이 지연되면 `SessionTimeoutScheduler`가 만료 세션을 `FAILED` 처리 시도하지만, AI의 `CompleteAnalysis` 콜백과 동시에 충돌하면 `@Version` 낙관적 락 재시도 후 콜백 결과를 우선합니다(first-write-wins, 멱등). TTS 발화 이벤트 배치(`ReportFeedbackBatch`)는 Spring 계약은 완료됐지만 AI 서버 쪽 세트 경계 감지·전송 로직은 아직 구현 전입니다.
 
 ---
 
