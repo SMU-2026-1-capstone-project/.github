@@ -1,5 +1,24 @@
 <div align="center">
 
+# 🏋️ ShadowFit
+
+**카메라로 찍은 내 운동 자세를, 정답 동작과 실시간으로 비교해주는 홈트레이닝 앱**
+
+사용자가 스마트폰 카메라로 스쿼트 동작을 촬영하면, AI 서버가 자세를 추출해 기준(레퍼런스) 동작과 시계열로 비교(DTW)하고, 그 결과를 실시간 피드백(음성 안내 포함)으로 되돌려줍니다.
+React Native 앱 ↔ Spring Boot 백엔드 ↔ FastAPI AI 서버가 gRPC로 연동되는 구조입니다.
+
+| 저장소 | 역할 |
+| :--- | :--- |
+| [FRONT](https://github.com/SMU-2026-1-capstone-project/FRONT) | React Native 클라이언트 |
+| [ShadowFit-BACKEND](https://github.com/SMU-2026-1-capstone-project/ShadowFit-BACKEND) | Spring Boot API 서버 |
+| [AI-server](https://github.com/SMU-2026-1-capstone-project/AI-server) | FastAPI 자세 분석 서버 |
+
+</div>
+
+---
+
+<div align="center">
+
 # 🛠️ 기술 스택
 
 ## 📱 Frontend
@@ -29,8 +48,7 @@
 | **Database / ORM** | ![MySQL](https://img.shields.io/badge/MYSQL_8-4479A1?style=for-the-badge&logo=mysql&logoColor=white) ![JPA](https://img.shields.io/badge/JPA-59666C?style=for-the-badge&logo=hibernate&logoColor=white) ![H2](https://img.shields.io/badge/H2_DATABASE-09476B?style=for-the-badge&logo=h2&logoColor=white) |
 | **Security** | ![JWT](https://img.shields.io/badge/JWT-000000?style=for-the-badge&logo=jsonwebtokens&logoColor=white) ![Spring Security](https://img.shields.io/badge/SPRING_SECURITY-6DB33F?style=for-the-badge&logo=springsecurity&logoColor=white) |
 | **API Docs** | ![Swagger](https://img.shields.io/badge/SWAGGER-85EA2D?style=for-the-badge&logo=swagger&logoColor=black) |
-| **Communication** | ![gRPC](https://img.shields.io/badge/GRPC-244C5A?style=for-the-badge&logo=grpc&logoColor=white) ![Protocol Buffers](https://img.shields.io/badge/PROTOBUF-4285F4?style=for-the-badge&logo=google&logoColor=white) |
-| **Cloud / Infra** | ![AWS](https://img.shields.io/badge/AWS-232F3E?style=for-the-badge&logo=amazonaws&logoColor=white) ![Docker](https://img.shields.io/badge/DOCKER-2496ED?style=for-the-badge&logo=docker&logoColor=white) ![Nginx](https://img.shields.io/badge/NGINX-009639?style=for-the-badge&logo=nginx&logoColor=white) ![GitHub Actions](https://img.shields.io/badge/GITHUB_ACTIONS-2088FF?style=for-the-badge&logo=githubactions&logoColor=white) |
+| **Service 간 통신** | ![gRPC](https://img.shields.io/badge/GRPC-244C5A?style=for-the-badge&logo=grpc&logoColor=white) ![Protocol Buffers](https://img.shields.io/badge/PROTOBUF-4285F4?style=for-the-badge&logo=google&logoColor=white) |
 | **Utilities** | ![Lombok](https://img.shields.io/badge/LOMBOK-BC4521?style=for-the-badge&logo=java&logoColor=white) ![ModelMapper](https://img.shields.io/badge/MODELMAPPER-FF6F00?style=for-the-badge&logo=java&logoColor=white) |
 
 ---
@@ -44,17 +62,18 @@
 | **AI / CV** | ![MediaPipe](https://img.shields.io/badge/MEDIAPIPE-FF6F00?style=for-the-badge&logo=google&logoColor=white) ![OpenCV](https://img.shields.io/badge/OPENCV-5C3EE8?style=for-the-badge&logo=opencv&logoColor=white) ![PyTorch](https://img.shields.io/badge/PYTORCH-EE4C2C?style=for-the-badge&logo=pytorch&logoColor=white) |
 | **Motion Analysis** | ![DTW](https://img.shields.io/badge/DTW-DYNAMIC_TIME_WARPING-blue?style=for-the-badge) |
 | **Validation** | ![Pydantic](https://img.shields.io/badge/PYDANTIC-E92063?style=for-the-badge&logo=pydantic&logoColor=white) |
-| **Communication** | ![gRPC](https://img.shields.io/badge/GRPC-244C5A?style=for-the-badge&logo=grpc&logoColor=white) ![Protocol Buffers](https://img.shields.io/badge/PROTOBUF-4285F4?style=for-the-badge&logo=google&logoColor=white) |
+| **Service 간 통신** | ![gRPC](https://img.shields.io/badge/GRPC-244C5A?style=for-the-badge&logo=grpc&logoColor=white) ![Protocol Buffers](https://img.shields.io/badge/PROTOBUF-4285F4?style=for-the-badge&logo=google&logoColor=white) |
 
 ---
 
-## 🐳 Infrastructure
+## 🐳 Infra & 배포
 
 | 역할 | 종류 |
 | :--- | :--- |
-| **Container Orchestration** | ![Docker Compose](https://img.shields.io/badge/DOCKER_COMPOSE-2496ED?style=for-the-badge&logo=docker&logoColor=white) |
-| **Database** | ![MySQL](https://img.shields.io/badge/MYSQL_8-4479A1?style=for-the-badge&logo=mysql&logoColor=white) |
-| **Communication** | ![REST API](https://img.shields.io/badge/REST_API-005571?style=for-the-badge) ![gRPC](https://img.shields.io/badge/GRPC-244C5A?style=for-the-badge&logo=grpc&logoColor=white) |
-| **Deployment** | ![AWS](https://img.shields.io/badge/AWS-232F3E?style=for-the-badge&logo=amazonaws&logoColor=white) ![Docker](https://img.shields.io/badge/DOCKER-2496ED?style=for-the-badge&logo=docker&logoColor=white) |
+| **Container** | ![Docker](https://img.shields.io/badge/DOCKER-2496ED?style=for-the-badge&logo=docker&logoColor=white) ![Docker Compose](https://img.shields.io/badge/DOCKER_COMPOSE-2496ED?style=for-the-badge&logo=docker&logoColor=white) |
+| **Web Server** | ![Nginx](https://img.shields.io/badge/NGINX-009639?style=for-the-badge&logo=nginx&logoColor=white) |
+| **Cloud** | ![AWS](https://img.shields.io/badge/AWS-232F3E?style=for-the-badge&logo=amazonaws&logoColor=white) |
+| **CI/CD** | ![GitHub Actions](https://img.shields.io/badge/GITHUB_ACTIONS-2088FF?style=for-the-badge&logo=githubactions&logoColor=white) |
+| **Service 간 프로토콜** | ![REST API](https://img.shields.io/badge/REST_API-005571?style=for-the-badge) ![gRPC](https://img.shields.io/badge/GRPC-244C5A?style=for-the-badge&logo=grpc&logoColor=white) |
 
 </div>
